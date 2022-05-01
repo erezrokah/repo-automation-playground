@@ -92,7 +92,7 @@ jobs:
       # Set required ok_to_test check
       - uses: myrotvorets/set-commit-status-action@1.1.4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_CQ_BOT }}
           status: "success"
           sha: "${{ github.event.client_payload.slash_command.args.named.sha || github.event.pull_request.head.sha || github.sha }}"
           context: ok_to_test
