@@ -78,3 +78,4 @@ jobs:
         with:
           status: "${{ job.status }}"
           sha: "${{ github.event.client_payload.slash_command.args.named.sha }}"
+          context: ${{ github.job }}
