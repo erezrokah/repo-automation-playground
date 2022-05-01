@@ -5,16 +5,14 @@ on:
     types: [created]
 
 jobs:
-  ok-to-test:
+  manual-approve:
     runs-on: ubuntu-latest
     steps:
       - name: Slash Command Dispatch
-        # Fix the version by using a commit sha
         uses: peter-evans/slash-command-dispatch@v3
         with:
-          token: ${{ secrets.GH_CQ_BOT }}
+          token: ${{ secrets.GH_PAT }}
           reaction-token: ${{ secrets.GITHUB_TOKEN }}
           issue-type: pull-request
-          commands: ok-to-test
-          named-args: true
+          commands: manual-approve
           permission: write
