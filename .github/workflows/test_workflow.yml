@@ -77,20 +77,22 @@ jobs:
         id: update-check-run
         if: ${{ always() && github.event_name == 'repository_dispatch' }}
         env:
+          number: ${{ github.event.client_payload.pull_request.number }}
+          job: ${{ github.job }}
           conclusion: ${{ job.status }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { data: pull } = await github.rest.pulls.get({
               ...context.repo,
-              pull_number: context.event.client_payload.pull_request.number
+              pull_number: process.env.number
             });
             const ref = pull.head.sha;
             const { data: checks } = await github.rest.checks.listForRef({
               ...context.repo,
               ref
             });
-            const check = checks.check_runs.filter(c => c.name === context.job);
+            const check = checks.check_runs.filter(c => c.name === process.env.job);
             const { data: result } = await github.rest.checks.update({
               ...context.repo,
               check_run_id: check[0].id,
