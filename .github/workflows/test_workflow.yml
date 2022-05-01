@@ -74,6 +74,6 @@ jobs:
         run: echo "Hello World"
 
       - if: always() && github.event_name == 'repository_dispatch'
-        uses: ouzi-dev/commit-status-updater@v1.1.0
+        uses: myrotvorets/set-commit-status-action@5b39333f62641d4fe9c0967572f738a4aea8a15b
         with:
           status: "${{ job.status }}"
