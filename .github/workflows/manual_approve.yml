@@ -1,4 +1,4 @@
-name: Ok To Test
+name: Manual Approve
 
 on:
   issue_comment:
