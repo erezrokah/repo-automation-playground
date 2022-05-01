@@ -72,10 +72,11 @@ jobs:
       - name: Set up Go 1.x
         if: steps.changes.outputs.src == 'true'
         run: echo "Hello World"
+        id: last_step
 
       - if: always() && github.event_name == 'repository_dispatch'
-        uses: myrotvorets/set-commit-status-action@5b39333f62641d4fe9c0967572f738a4aea8a15b
+        uses: LouisBrunner/checks-action@v1.2.0
         with:
-          status: "${{ job.status }}"
-          sha: "${{ github.event.client_payload.slash_command.args.named.sha }}"
-          context: ${{ github.job }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          conclusion: "${{ job.status }}"
+          check_id: ${{ steps.last_step.outputs.check_id }}
