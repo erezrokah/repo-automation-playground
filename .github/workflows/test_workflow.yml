@@ -40,17 +40,10 @@ jobs:
     steps:
       # Set required ok_to_test check
       - uses: myrotvorets/set-commit-status-action@1.1.4
-        if: github.event_name == 'repository_dispatch'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: "success"
-          sha: "${{ github.event.client_payload.slash_command.args.named.sha }}"
-          context: ok_to_test
-      - uses: myrotvorets/set-commit-status-action@1.1.4
-        if: github.event_name != 'repository_dispatch'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: "success"
+          sha: "${{ github.event.client_payload.slash_command.args.named.sha || github.event.pull_request.head.sha || github.sha }}"
           context: ok_to_test
 
       # Continue with regular CI flow
