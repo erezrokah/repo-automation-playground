@@ -1,0 +1,62 @@
+name: Test workflow
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+    types: [ok-to-test-command]
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  ok_to_test:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.is_ok_to_test.outputs.result }}
+    steps:
+      - name: Check if ok to test
+        id: is_ok_to_test
+        run: |
+          ok_to_test=${{ github.event_name == 'repository_dispatch' && github.event.client_payload.slash_command.sha != '' && contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.sha) }}
+          echo ::set-output name=result::"$ok_to_test"
+  is_organization_member:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.is_organization_member.outputs.result }}
+    steps:
+      - name: Check if organization member
+        id: is_organization_member
+        uses: jamessingleton/is-organization-member@78ce597bc916e3d0149e459575aaf6e4885dddc3
+        with:
+          organization: cloudquery
+          username: ${{ github.event.issue.user.login }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  lint_doc:
+    needs: [is_organization_member, ok_to_test]
+    if: needs.is_organization_member.outputs.status == 'true' || needs.ok_to_test.outputs.status == 'true'
+    name: Lint Provider Doc
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fork based /ok-to-test checkout
+        uses: actions/checkout@v3
+        if: github.event_name == 'repository_dispatch'
+        with:
+          ref: "refs/pull/${{ github.event.client_payload.pull_request.number }}/merge"
+      - uses: actions/checkout@v3
+        if: github.event_name == 'pull_request_target'
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+      - uses: actions/checkout@v3
+        if: github.event_name == 'push'
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            src:
+              - '!(ignore/**/*)'
+      - name: Set up Go 1.x
+        if: steps.changes.outputs.src == 'true'
+        run: echo "Hello World"
