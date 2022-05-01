@@ -27,11 +27,11 @@ jobs:
     steps:
       - name: Check if organization member
         id: is_organization_member
-        uses: jamessingleton/is-organization-member@78ce597bc916e3d0149e459575aaf6e4885dddc3
+        uses: yevgenypats/is-organization-member@646ee210c04d55d8b7f3a591722d06eb16310236
         with:
           organization: cloudquery
           username: ${{ github.actor }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
 
   lint_doc:
     needs: [is_organization_member, ok_to_test]
