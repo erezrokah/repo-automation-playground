@@ -33,24 +33,26 @@ jobs:
           username: ${{ github.actor }}
           token: ${{ secrets.GH_PAT }}
 
-  # This is here so we can enforce branch protection required status check
-  ok_to_test:
-    needs: [is_organization_member, manually_approved]
-    runs-on: ubuntu-latest
-    if: needs.is_organization_member.outputs.status == 'true' || needs.manually_approved.outputs.status == 'true'
-    outputs:
-      status: ${{ steps.ok_to_test.outputs.result }}
-    steps:
-      - name: Check if ok to test
-        id: ok_to_test
-        run: |
-          echo ::set-output name=result::"true"
-
   lint_doc:
-    needs: [ok_to_test]
+    needs: [is_organization_member, manually_approved]
+    if: needs.is_organization_member.outputs.status == 'true' || needs.manually_approved.outputs.status == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Fork based /ok-to-test checkout
+      # Set required ok_to_test check
+      - uses: ouzi-dev/commit-status-updater@v1.1.2
+        if: github.event_name == 'repository_dispatch'
+        with:
+          status: "success"
+          sha: "${{ github.event.client_payload.slash_command.args.named.sha }}"
+          context: ok_to_test
+      - uses: ouzi-dev/commit-status-updater@v1.1.2
+        if: github.event_name != 'repository_dispatch'
+        with:
+          status: "success"
+          context: ok_to_test
+
+      # Continue with regular CI flow
+      - name: Fork based /manual-approve checkout
         uses: actions/checkout@v3
         if: github.event_name == 'repository_dispatch'
         with:
@@ -73,8 +75,8 @@ jobs:
         run: echo "Hello World"
         id: last_step
 
+      # Update the exiting check run if running from manual approval flow
       - uses: actions/github-script@v6
-        id: update-check-run
         if: ${{ always() && github.event_name == 'repository_dispatch' }}
         env:
           number: ${{ github.event.client_payload.pull_request.number }}
