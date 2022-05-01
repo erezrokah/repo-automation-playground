@@ -72,3 +72,8 @@ jobs:
       - name: Set up Go 1.x
         if: steps.changes.outputs.src == 'true'
         run: echo "Hello World"
+
+      - if: always() && github.event_name == 'repository_dispatch'
+        uses: ouzi-dev/commit-status-updater@v1.1.0
+        with:
+          status: "${{ job.status }}"
