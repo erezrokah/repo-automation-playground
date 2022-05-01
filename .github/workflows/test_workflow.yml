@@ -4,7 +4,7 @@ on:
     branches:
       - main
   repository_dispatch:
-    types: [ok-to-test-command]
+    types: [manual-approve-command]
   pull_request_target:
     branches:
       - main
@@ -18,7 +18,7 @@ jobs:
       - name: Check if ok to test
         id: manually_approved
         run: |
-          manually_approved=${{ github.event_name == 'repository_dispatch' && github.event.client_payload.slash_command.sha != '' && contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.sha) }}
+          manually_approved=${{ github.event_name == 'repository_dispatch' && github.event.client_payload.slash_command.args.named.sha != '' && contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.args.named.sha) }}
           echo ::set-output name=result::"$manually_approved"
   is_organization_member:
     runs-on: ubuntu-latest
