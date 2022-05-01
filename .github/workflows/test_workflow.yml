@@ -77,3 +77,4 @@ jobs:
         uses: myrotvorets/set-commit-status-action@5b39333f62641d4fe9c0967572f738a4aea8a15b
         with:
           status: "${{ job.status }}"
+          sha: "${{ github.event.client_payload.slash_command.args.named.sha }}"
