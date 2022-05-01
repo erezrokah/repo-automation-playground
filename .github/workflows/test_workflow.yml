@@ -15,7 +15,7 @@ jobs:
     outputs:
       status: ${{ steps.manually_approved.outputs.result }}
     steps:
-      - name: Check if ok to test
+      - name: Check if was approved manually
         id: manually_approved
         run: |
           manually_approved=${{ github.event_name == 'repository_dispatch' && github.event.client_payload.slash_command.args.named.sha != '' && contains(github.event.client_payload.pull_request.head.sha, github.event.client_payload.slash_command.args.named.sha) }}
@@ -48,7 +48,6 @@ jobs:
 
   lint_doc:
     needs: [ok_to_test]
-    name: Lint Provider Doc
     runs-on: ubuntu-latest
     steps:
       - name: Fork based /ok-to-test checkout
@@ -72,8 +71,11 @@ jobs:
       - name: Set up Go 1.x
         if: steps.changes.outputs.src == 'true'
         run: echo "Hello World"
+        id: last_step
 
-      - if: always() && github.event_name == 'repository_dispatch'
-        uses: ouzi-dev/commit-status-updater@v1.1.0
+      - uses: LouisBrunner/checks-action@v1.2.0
+        if: ${{ always() && github.event_name == 'repository_dispatch' }}
         with:
-          status: "${{ job.status }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ github.job }}
+          conclusion: ${{ job.status }}
