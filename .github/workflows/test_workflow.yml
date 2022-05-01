@@ -96,3 +96,4 @@ jobs:
           status: "success"
           sha: "${{ github.event.client_payload.slash_command.args.named.sha || github.event.pull_request.head.sha || github.sha }}"
           context: ok_to_test
+          allowForks: true
