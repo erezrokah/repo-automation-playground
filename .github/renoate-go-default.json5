@@ -1,0 +1,17 @@
+{
+  extends: ["config:base", "schedule:weekly"],
+  postUpdateOptions: ["gomodTidy"],
+  rebaseWhen: "conflicted",
+  ignorePresets: [":prHourlyLimit2"],
+  automerge: false,
+  enabled: false,
+  semanticCommits: true,
+  dependencyDashboard: true,
+  packageRules: [
+    {
+      matchPackageNames: ["cloudquery/cq-provider-sdk"],
+      enabled: true,
+      schedule: null,
+    },
+  ],
+}
