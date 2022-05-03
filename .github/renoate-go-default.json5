@@ -6,7 +6,7 @@
   automerge: false,
   enabled: true,
   onboarding: true,
-  semanticCommits: true,
+  semanticCommits: false,
   dependencyDashboard: true,
   packageRules: [
     { packagePatterns: ["*"], enabled: false },
@@ -16,4 +16,5 @@
       schedule: null,
     },
   ],
+  commitMessagePrefix: "fix(deps): ",
 }
