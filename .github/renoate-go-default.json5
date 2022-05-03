@@ -8,4 +8,12 @@
   onboarding: true,
   semanticCommits: true,
   dependencyDashboard: true,
+  packageRules: [
+    { packagePatterns: ["*"], enabled: false },
+    {
+      matchPackageNames: ["github.com/cloudquery/cq-provider-sdk"],
+      enabled: true,
+      schedule: null,
+    },
+  ],
 }
