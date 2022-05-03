@@ -2,4 +2,5 @@
   extends: [
     "github>cloudquery/repo-automation-playground//.github/renoate-go-default.json5",
   ],
+  repositories: ["cloudquery/repo-automation-playground"],
 }
