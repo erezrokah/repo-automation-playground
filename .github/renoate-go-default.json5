@@ -4,10 +4,12 @@
   rebaseWhen: "conflicted",
   ignorePresets: [":prHourlyLimit2"],
   automerge: false,
-  enabled: false,
+  enabled: true,
+  onboarding: true,
   semanticCommits: true,
   dependencyDashboard: true,
   packageRules: [
+    { packagePatterns: ["*"], enabled: false },
     {
       matchPackageNames: ["cloudquery/cq-provider-sdk"],
       enabled: true,
