@@ -2,7 +2,7 @@ module main.go
 
 go 1.17
 
-require github.com/cloudquery/cq-provider-sdk v0.9.0
+require github.com/cloudquery/cq-provider-sdk v0.14.7
 
 require (
 	github.com/Masterminds/squirrel v1.5.0 // indirect
